@@ -16,6 +16,10 @@ import java.util.TimerTask;
  * 人物类
  */
 public class CharacterSprite extends Parent {
+    private int score = 0;
+
+    long intevalPeriod = 500;
+
     private enum Direction {
         Left, Right, Up, Down
     }
@@ -41,11 +45,14 @@ public class CharacterSprite extends Parent {
     private List<ImageView>imageViews = new ArrayList<>();
 
 
-    public CharacterSprite(CharacterListener characterListener, int x, int y, int width, int height) {
+    public CharacterSprite(CharacterListener characterListener, int x, int y, int width, int height,boolean isMine) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.characterListener = characterListener;
+
+        intevalPeriod = 500;
 
         data.add(new Coord(x, y));
         data.add(new Coord(x, y-1));
@@ -53,7 +60,7 @@ public class CharacterSprite extends Parent {
         direction = Direction.Down;
         move();
 
-        if (characterListener!=null){
+        if (isMine){
             //增加Timer
             timerTask = new TimerTask() {
                 @Override
@@ -75,7 +82,6 @@ public class CharacterSprite extends Parent {
                                 }else if(keyCode == KeyCode.DOWN){
                                     moveDown();
                                 }
-
                             }
                         }
                     });
@@ -162,17 +168,8 @@ public class CharacterSprite extends Parent {
             actor = new Image(getClass().getResourceAsStream("img/right.png"));
         }
 
-
-
         data.remove(data.size()-1);
         data.add(0,tCoord);
-
-
-        ImageView imageView = new ImageView(actor);
-        imageView.setLayoutX(data.get(0).x * width);
-        imageView.setLayoutY(data.get(0).y * height);
-        getChildren().add(imageView);
-        imageViews.add(imageView);
 
         for (int i = 1 ; i < data.size() ; i++){
             Image t_actor = new Image(getClass().getResourceAsStream("img/body.png"));
@@ -182,18 +179,20 @@ public class CharacterSprite extends Parent {
             getChildren().add(t_imageView);
             imageViews.add(t_imageView);
         }
-        //characterListener.onMoved(data);
+
+        ImageView imageView = new ImageView(actor);
+        imageView.setLayoutX(data.get(0).x * width);
+        imageView.setLayoutY(data.get(0).y * height);
+        getChildren().add(imageView);
+        imageViews.add(imageView);
+        characterListener.onMoved(data);
     }
 
     /**
      * 人物停止
      * */
     public void stop(){
-        try {
-            timerTask.cancel();
-        }catch (Exception e){
 
-        }
         try {
             timer.cancel();
         }catch (Exception e){
@@ -210,4 +209,37 @@ public class CharacterSprite extends Parent {
 
     }
 
+    public void addSpeed(){
+        timer.cancel();
+        timer = new Timer();
+        //首次执行的时候的延时
+        long delay = 0;
+        //每次执行的时候的时延
+        if (intevalPeriod > 200){
+            intevalPeriod = intevalPeriod - 20;
+        }
+        // schedules the task to be run in an interval
+        timer.scheduleAtFixedRate(timerTask, delay,
+                intevalPeriod);
+    }
+
+    public void subSpeed(){
+        timer.cancel();
+        timer = new Timer();
+        //首次执行的时候的延时
+        long delay = 0;
+        //每次执行的时候的时延
+        intevalPeriod = intevalPeriod + 30;
+        // schedules the task to be run in an interval
+        timer.scheduleAtFixedRate(timerTask, delay,
+                intevalPeriod);
+    }
+
+    public void addScore(int i){
+        score = score + i;
+    }
+
+    public int getScore(){
+        return score;
+    }
 }

@@ -7,5 +7,7 @@ package sample;
 public interface MapListener {
     public void onMyDied();
     public void onOpponentDied();
-
+    public void onBothDied();
+    public void onMyAteFood();
+    public void onOpponentAteFood();
 }
