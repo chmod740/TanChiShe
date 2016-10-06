@@ -1,5 +1,5 @@
 # TanChiShe
-### 基于JavaFX技术开发的贪吃蛇游戏
+### 基于JavaFX技术开发的联机对战贪吃蛇游戏
 # 开发人员：
 ### 逻辑：[HUPENG](https://github.com/imu-hupeng)
 ### 美工：[ZHANGPENG](https://github.com/zhangpengpengpeng)
