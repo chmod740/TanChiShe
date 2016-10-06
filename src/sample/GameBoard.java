@@ -2,6 +2,7 @@ package sample;
 
 import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
+import javafx.scene.text.Text;
 
 import java.util.List;
 
@@ -42,6 +43,11 @@ public class GameBoard {
      * */
     private FoodSprite foodSprite;
 
+    /**
+     * 文字精灵
+     * */
+    private TextSprite textSprite;
+
     private boolean isMyCharacterSpriteStop = false;
     private boolean isOpponentCharacterSpriteStop = false;
 
@@ -58,7 +64,7 @@ public class GameBoard {
             myCharacterSprite = new CharacterSprite(new MyCharacterListener(),10,2,40,40,true);
         }
         foodSprite = new FoodSprite(40,40);
-
+        textSprite = new TextSprite();
         if (isServer){
             provideFood(null);
         }
@@ -66,6 +72,7 @@ public class GameBoard {
         gameListener.onMyCharacterSpriteCreated(myCharacterSprite);
         gameListener.onOpponentCharacterSpriteCreated(opponentCharacterSprite);
         gameListener.onFoodSpriteCreated(foodSprite);
+        gameListener.onTextSpriteCreated(textSprite);
     }
 
     public void addLocalKeyCode(KeyCode keyCode){
@@ -143,7 +150,8 @@ public class GameBoard {
         @Override
         public void onMyDied() {
             if (!isMyCharacterSpriteStop){
-                System.out.println("我方阵亡");
+                textSprite.add("我方死亡，我方得分：" + myCharacterSprite.getScore());
+
                 myCharacterSprite.stop();
 
                 isMyCharacterSpriteStop = true;
@@ -156,7 +164,7 @@ public class GameBoard {
         @Override
         public void onOpponentDied() {
             if (!isOpponentCharacterSpriteStop){
-                System.out.println("对方阵亡");
+                textSprite.add("对方死亡，对方得分：" + opponentCharacterSprite.getScore());
                 opponentCharacterSprite.stop();
 
                 isOpponentCharacterSpriteStop = true;
@@ -171,7 +179,7 @@ public class GameBoard {
             if (!isMyCharacterSpriteStop || !isMyCharacterSpriteStop){
                 opponentCharacterSprite.stop();
                 myCharacterSprite.stop();
-                System.out.println("双方阵亡");
+
 
                 isMyCharacterSpriteStop = true;
                 isOpponentCharacterSpriteStop = true;
@@ -232,6 +240,6 @@ public class GameBoard {
      * 游戏结束
      * */
     private void gameOver(){
-        System.out.println("游戏结束");
+        textSprite.add("游戏结束，我方得分：" + myCharacterSprite.getScore()+",对方得分:" + opponentCharacterSprite.getScore());
     }
 }

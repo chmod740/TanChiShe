@@ -202,6 +202,11 @@ public class GamePanel extends Parent {
             minaUtil.send(myData);
         }
 
+        @Override
+        public void onTextSpriteCreated(TextSprite textSprite) {
+            getChildren().add(textSprite);
+        }
+
 
     }
 
@@ -242,8 +247,7 @@ public class GamePanel extends Parent {
                 @Override
                 public void run() {
                     gameBoard = new GameBoard(myGameListener, isServer);
-//                    JOptionPane.showMessageDialog(null,
-//                            msg ,"游戏提示", JOptionPane.INFORMATION_MESSAGE);
+
                 }
             });
 

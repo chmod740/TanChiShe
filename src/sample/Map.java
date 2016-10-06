@@ -22,12 +22,16 @@ public class Map {
 
     public void addMyCharacterCoords(List<Coord>coords){
         myCoords = coords;
-        checkStatus();
+        checkBothDieStatus();
+        checkMyDieStatus();
+        checkFoodStatus();
     }
 
     public void addOpponentCharacterCoords(List<Coord>coords){
         opponentCoords = coords;
-        checkStatus();
+        checkBothDieStatus();
+        checkOpponentDieStatus();
+        checkFoodStatus();
     }
 
     public Map(MapListener mapListener){
@@ -39,8 +43,22 @@ public class Map {
         foodCoords.add(coord);
     }
 
-    private void checkStatus(){
-        //检查蛇的状态
+    private void checkBothDieStatus(){
+        try {
+            Coord myCoord = myCoords.get(0);
+            Coord opponentCoord = opponentCoords.get(0);
+
+            if (myCoord.x == opponentCoord.x && myCoord.y == opponentCoord.y){
+                mapListener.onBothDied();
+                return;
+            }
+        }catch (Exception e){
+
+        }
+
+    }
+
+    private void checkMyDieStatus(){
         try {
             Coord myCoord = myCoords.get(0);
             Coord opponentCoord = opponentCoords.get(0);
@@ -53,19 +71,6 @@ public class Map {
                 return;
             }
 
-            if (opponentCoord.x<0 || opponentCoord.x > 19){
-                mapListener.onOpponentDied();
-                return;
-            }
-            if (opponentCoord.y < 0 || opponentCoord.y > 14){
-                mapListener.onOpponentDied();
-                return;
-            }
-
-            if (myCoord.x == opponentCoord.x && myCoord.y == opponentCoord.y){
-                mapListener.onBothDied();
-                return;
-            }
             try {
                 for (int i = 1 ; i < myCoords.size(); i++){
                     if (myCoord.x == myCoords.get(i).x && myCoord.y == myCoords.get(i).y){
@@ -86,7 +91,27 @@ public class Map {
             }catch (Exception e){
 
             }
+        }catch (Exception e){
 
+        }
+
+    }
+
+    private void checkOpponentDieStatus(){
+        //检查蛇的状态
+        try {
+            Coord myCoord = myCoords.get(0);
+            Coord opponentCoord = opponentCoords.get(0);
+
+
+            if (opponentCoord.x<0 || opponentCoord.x > 19){
+                mapListener.onOpponentDied();
+                return;
+            }
+            if (opponentCoord.y < 0 || opponentCoord.y > 14){
+                mapListener.onOpponentDied();
+                return;
+            }
 
             try {
                 for (int i = 1 ; i < myCoords.size(); i++){
@@ -108,28 +133,32 @@ public class Map {
             }catch (Exception e){
 
             }
-
-            try {
-                for (int i = 0 ; i < foodCoords.size() ; i ++){
-                    if (myCoord.x == foodCoords.get(i).x && myCoord.y == foodCoords.get(i).y){
-                        mapListener.onMyAteFood(myCoord);
-                        foodCoords.remove(i);
-                        return;
-                    }
-                    if (opponentCoord.x == foodCoords.get(i).x && opponentCoord.y == foodCoords.get(i).y){
-                        mapListener.onOpponentAteFood(opponentCoord);
-                        foodCoords.remove(i);
-                        return;
-                    }
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
         }catch (Exception e){
 
         }
-
     }
+
+    private void checkFoodStatus(){
+        try {
+            Coord myCoord = myCoords.get(0);
+            Coord opponentCoord = opponentCoords.get(0);
+            for (int i = 0 ; i < foodCoords.size() ; i ++){
+                if (myCoord.x == foodCoords.get(i).x && myCoord.y == foodCoords.get(i).y){
+                    mapListener.onMyAteFood(myCoord);
+                    foodCoords.remove(i);
+                    return;
+                }
+                if (opponentCoord.x == foodCoords.get(i).x && opponentCoord.y == foodCoords.get(i).y){
+                    mapListener.onOpponentAteFood(opponentCoord);
+                    foodCoords.remove(i);
+                    return;
+                }
+            }
+        }catch (Exception e){
+        }
+    }
+
+
 
 
     public Coord getFreeCoord(){

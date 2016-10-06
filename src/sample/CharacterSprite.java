@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,7 +169,6 @@ public class CharacterSprite extends Parent {
      * 人物停止
      * */
     public void stop(){
-
         try {
             timer.cancel();
         }catch (Exception e){
@@ -177,8 +177,23 @@ public class CharacterSprite extends Parent {
     }
 
     public void addKeyCode(KeyCode keyCode){
-        directions.clear();
-        directions.add(keyCode);
+        if (keyCode == KeyCode.LEFT && lastDirection!= Direction.Right){
+            directions.clear();
+            directions.add(keyCode);
+        }
+        if (keyCode == KeyCode.RIGHT && lastDirection!= Direction.Left){
+            directions.clear();
+            directions.add(keyCode);
+        }
+        if (keyCode == KeyCode.UP && lastDirection!= Direction.Down){
+            directions.clear();
+            directions.add(keyCode);
+        }
+        if (keyCode == KeyCode.DOWN && lastDirection!= Direction.Up){
+            directions.clear();
+            directions.add(keyCode);
+        }
+
     }
 
     public void removeKeyCode(KeyCode keyCode){
@@ -249,25 +264,6 @@ public class CharacterSprite extends Parent {
     }
 
     public void addLength(Coord coord){
-//        Coord tCoord = new Coord(coord.x,coord.y);
-//        if (lastDirection == Direction.Up){
-//            tCoord = new Coord(coord.x,coord.y-1);
-//        }
-//        if (lastDirection == Direction.Down){
-//            tCoord = new Coord(coord.x,coord.y+1);
-//        }
-//        if (lastDirection == Direction.Left){
-//            tCoord = new Coord(coord.x-1,coord.y);
-//        }
-//        if (lastDirection == Direction.Right){
-//            tCoord = new Coord(coord.x+1,coord.y);
-//        }
-//        data.add(0,tCoord);
         data.add(coord);
-//        try {
-//            Thread.sleep(intevalPeriod);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
     }
 }

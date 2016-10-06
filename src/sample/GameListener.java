@@ -12,4 +12,5 @@ public interface GameListener {
     public void onMyCharacterSpriteMoved(KeyCode keyCode);
     public void onFoodSpriteCreated(FoodSprite foodSprite);
     public void onFoodAdd(Coord coord);
+    public void onTextSpriteCreated(TextSprite textSprite);
 }
