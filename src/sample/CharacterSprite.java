@@ -62,31 +62,7 @@ public class CharacterSprite extends Parent {
 
         if (isMine){
             //增加Timer
-            timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            //更新JavaFX的主线程的代码放在此处
-                            int size = directions.size();
-                            if (size>0){
-                                KeyCode keyCode = directions.get(size-1);
-                                characterListener.onMoveRequest(keyCode);
-                                if(keyCode == KeyCode.LEFT){
-                                    moveLeft();
-                                }else if(keyCode == KeyCode.RIGHT){
-                                    moveRight();
-                                }else if(keyCode == KeyCode.UP){
-                                    moveUp();
-                                }else if(keyCode == KeyCode.DOWN){
-                                    moveDown();
-                                }
-                            }
-                        }
-                    });
-                }
-            };
+            addTaskTimer();
             timer = new Timer();
             //首次执行的时候的延时
             long delay = 0;
@@ -209,9 +185,38 @@ public class CharacterSprite extends Parent {
 
     }
 
+    private void addTaskTimer(){
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        //更新JavaFX的主线程的代码放在此处
+                        int size = directions.size();
+                        if (size>0){
+                            KeyCode keyCode = directions.get(size-1);
+                            characterListener.onMoveRequest(keyCode);
+                            if(keyCode == KeyCode.LEFT){
+                                moveLeft();
+                            }else if(keyCode == KeyCode.RIGHT){
+                                moveRight();
+                            }else if(keyCode == KeyCode.UP){
+                                moveUp();
+                            }else if(keyCode == KeyCode.DOWN){
+                                moveDown();
+                            }
+                        }
+                    }
+                });
+            }
+        };
+    }
+
     public void addSpeed(){
         timer.cancel();
         timer = new Timer();
+        addTaskTimer();
         //首次执行的时候的延时
         long delay = 0;
         //每次执行的时候的时延
@@ -241,5 +246,28 @@ public class CharacterSprite extends Parent {
 
     public int getScore(){
         return score;
+    }
+
+    public void addLength(Coord coord){
+//        Coord tCoord = new Coord(coord.x,coord.y);
+//        if (lastDirection == Direction.Up){
+//            tCoord = new Coord(coord.x,coord.y-1);
+//        }
+//        if (lastDirection == Direction.Down){
+//            tCoord = new Coord(coord.x,coord.y+1);
+//        }
+//        if (lastDirection == Direction.Left){
+//            tCoord = new Coord(coord.x-1,coord.y);
+//        }
+//        if (lastDirection == Direction.Right){
+//            tCoord = new Coord(coord.x+1,coord.y);
+//        }
+//        data.add(0,tCoord);
+        data.add(coord);
+//        try {
+//            Thread.sleep(intevalPeriod);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 }

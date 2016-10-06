@@ -188,6 +188,20 @@ public class GamePanel extends Parent {
             minaUtil.send(myData);
         }
 
+        @Override
+        public void onFoodSpriteCreated(FoodSprite foodSprite) {
+            getChildren().add(foodSprite);
+        }
+
+        @Override
+        public void onFoodAdd(Coord coord) {
+            MyData myData = new MyData();
+            myData.mode = 5;
+            myData.x = coord.x;
+            myData.y = coord.y;
+            minaUtil.send(myData);
+        }
+
 
     }
 
@@ -205,8 +219,13 @@ public class GamePanel extends Parent {
                     if (obj instanceof MyData){
                         try {
                             MyData myData = (MyData)obj;
-                            KeyCode keyCode = Tool.getKeyCodeFromMode(myData.mode);
-                            gameBoard.moveOpponentCharacterSprite(keyCode);
+                            if (myData.mode <= 4){
+                                KeyCode keyCode = Tool.getKeyCodeFromMode(myData.mode);
+                                gameBoard.moveOpponentCharacterSprite(keyCode);
+                            }
+                            if (myData.mode == 5){
+                                gameBoard.provideFood(new Coord(myData.x,myData.y));
+                            }
                         }catch (Exception e){
 
                         }

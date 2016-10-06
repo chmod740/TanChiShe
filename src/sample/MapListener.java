@@ -8,6 +8,6 @@ public interface MapListener {
     public void onMyDied();
     public void onOpponentDied();
     public void onBothDied();
-    public void onMyAteFood();
-    public void onOpponentAteFood();
+    public void onMyAteFood(Coord coord);
+    public void onOpponentAteFood(Coord coord);
 }

@@ -10,6 +10,9 @@ import java.util.List;
  * 地图类
  */
 public class Map {
+
+
+
     private List<Coord>myCoords = new ArrayList<>();
     private List<Coord>opponentCoords = new ArrayList<>();
 
@@ -32,7 +35,8 @@ public class Map {
     }
 
     public void addFood(int x,int y){
-
+        Coord coord = new Coord(x,y);
+        foodCoords.add(coord);
     }
 
     private void checkStatus(){
@@ -108,18 +112,18 @@ public class Map {
             try {
                 for (int i = 0 ; i < foodCoords.size() ; i ++){
                     if (myCoord.x == foodCoords.get(i).x && myCoord.y == foodCoords.get(i).y){
-                        mapListener.onMyAteFood();
+                        mapListener.onMyAteFood(myCoord);
                         foodCoords.remove(i);
                         return;
                     }
                     if (opponentCoord.x == foodCoords.get(i).x && opponentCoord.y == foodCoords.get(i).y){
-                        mapListener.onOpponentAteFood();
+                        mapListener.onOpponentAteFood(opponentCoord);
                         foodCoords.remove(i);
                         return;
                     }
                 }
             }catch (Exception e){
-
+                e.printStackTrace();
             }
         }catch (Exception e){
 
@@ -146,6 +150,7 @@ public class Map {
         List<Coord>list = new ArrayList<>();
         list.addAll(myCoords);
         list.addAll(opponentCoords);
+        list.addAll(foodCoords);
         for (Coord element : list){
             if (coord.x == element.x && coord.y == element.y){
                 return true;

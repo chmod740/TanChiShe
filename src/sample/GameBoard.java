@@ -37,6 +37,11 @@ public class GameBoard {
      * */
     private Map map;
 
+    /**
+     * 食物精灵
+     * */
+    private FoodSprite foodSprite;
+
     private boolean isMyCharacterSpriteStop = false;
     private boolean isOpponentCharacterSpriteStop = false;
 
@@ -47,12 +52,20 @@ public class GameBoard {
         if (isServer){
             myCharacterSprite = new CharacterSprite(new MyCharacterListener(),2,2,40,40,true);
             opponentCharacterSprite = new CharacterSprite(new OpponentCharacterListener(),10,2,40,40,false);
+
         }else{
             opponentCharacterSprite = new CharacterSprite(new OpponentCharacterListener(),2,2,40,40,false);
             myCharacterSprite = new CharacterSprite(new MyCharacterListener(),10,2,40,40,true);
         }
+        foodSprite = new FoodSprite(40,40);
+
+        if (isServer){
+            provideFood(null);
+        }
+
         gameListener.onMyCharacterSpriteCreated(myCharacterSprite);
         gameListener.onOpponentCharacterSpriteCreated(opponentCharacterSprite);
+        gameListener.onFoodSpriteCreated(foodSprite);
     }
 
     public void addLocalKeyCode(KeyCode keyCode){
@@ -129,43 +142,96 @@ public class GameBoard {
 
         @Override
         public void onMyDied() {
-            System.out.println("我方阵亡");
-            myCharacterSprite.stop();
+            if (!isMyCharacterSpriteStop){
+                System.out.println("我方阵亡");
+                myCharacterSprite.stop();
+
+                isMyCharacterSpriteStop = true;
+                if (isOpponentCharacterSpriteStop){
+                    gameOver();
+                }
+            }
         }
 
         @Override
         public void onOpponentDied() {
-            System.out.println("对方阵亡");
-            opponentCharacterSprite.stop();
+            if (!isOpponentCharacterSpriteStop){
+                System.out.println("对方阵亡");
+                opponentCharacterSprite.stop();
+
+                isOpponentCharacterSpriteStop = true;
+                if (isMyCharacterSpriteStop){
+                    gameOver();
+                }
+            }
         }
 
         @Override
         public void onBothDied() {
-            opponentCharacterSprite.stop();
-            myCharacterSprite.stop();
-            System.out.println("双方阵亡");
+            if (!isMyCharacterSpriteStop || !isMyCharacterSpriteStop){
+                opponentCharacterSprite.stop();
+                myCharacterSprite.stop();
+                System.out.println("双方阵亡");
+
+                isMyCharacterSpriteStop = true;
+                isOpponentCharacterSpriteStop = true;
+                gameOver();
+            }
         }
 
         @Override
-        public void onMyAteFood() {
+        public void onMyAteFood(Coord coord) {
+            System.out.println("我方吃");
+
             myCharacterSprite.addScore(1);
             myCharacterSprite.addSpeed();
-            provideFood();
+
+            myCharacterSprite.addLength(coord);
+
+            foodSprite.removeFood(coord);
+
+            if (isServer){
+                provideFood(null);
+            }
+
         }
 
         @Override
-        public void onOpponentAteFood() {
+        public void onOpponentAteFood(Coord coord) {
+            System.out.println("对方吃");
+
             opponentCharacterSprite.addScore(1);
-            opponentCharacterSprite.addSpeed();
-            provideFood();
+//            opponentCharacterSprite.addSpeed();
+
+            opponentCharacterSprite.addLength(coord);
+
+            foodSprite.removeFood(coord);
+
+            if (isServer){
+                provideFood(null);
+            }
+
         }
     }
 
     /**
      * 提供食物
      * */
-    private void provideFood(){
-        Coord coord = map.getFreeCoord();
+    public void provideFood(Coord coord){
+        if (coord == null){
+            coord = map.getFreeCoord();
+        }
         map.addFood(coord.x,coord.y);
+        foodSprite.addFood(coord);
+        if (isServer){
+            gameListener.onFoodAdd(coord);
+        }
+    }
+
+    /**
+     * 游戏结束
+     * */
+    private void gameOver(){
+        System.out.println("游戏结束");
     }
 }
