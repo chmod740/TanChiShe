@@ -3,6 +3,8 @@ package sample;
 import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 
+import java.util.List;
+
 /**
  * 游戏盘,精灵控制器
  * @author HUPENG
@@ -29,22 +31,18 @@ public class GameBoard {
      * */
     private CharacterSprite opponentCharacterSprite;
 
-
-
-    /**
-     * 地图管理
-     * */
-    private MapManager mapManager;
+    private boolean isMyCharacterSpriteStop = false;
+    private boolean isOpponentCharacterSpriteStop = false;
 
     public GameBoard(GameListener gameListener, boolean isServer){
         this.gameListener = gameListener;
         this.isServer = isServer;
-        this.mapManager = new MapManager();
+
         if (isServer){
             myCharacterSprite = new CharacterSprite(new MyCharacterListener(),2,2,40,40);
-            opponentCharacterSprite = new CharacterSprite(null,10,2,40,40);
+            opponentCharacterSprite = new CharacterSprite(new OpponentCharacterListener(),10,2,40,40);
         }else{
-            opponentCharacterSprite = new CharacterSprite(null,2,2,40,40);
+            opponentCharacterSprite = new CharacterSprite(new OpponentCharacterListener(),2,2,40,40);
             myCharacterSprite = new CharacterSprite(new MyCharacterListener(),10,2,40,40);
         }
         gameListener.onMyCharacterSpriteCreated(myCharacterSprite);
@@ -87,13 +85,37 @@ public class GameBoard {
     class MyCharacterListener implements CharacterListener{
 
         @Override
-        public void onMoveRequest(int x, int y) {
+        public void onMoveRequest(KeyCode keyCode) {
+            gameListener.onMyCharacterSpriteMoved(keyCode);
+        }
+
+        @Override
+        public void onMoved(List<Coord> list) {
+
+        }
+
+
+        @Override
+        public void onBombRequest(int x, int y, boolean isMyCharacterSprite) {
+
+        }
+    }
+
+
+    /**
+     * 对手的精灵的回调
+     * */
+    class OpponentCharacterListener implements CharacterListener{
+
+
+        @Override
+        public void onMoveRequest(KeyCode keyCode) {
 
         }
 
         @Override
-        public void onMoved(KeyCode keyCode) {
-            gameListener.onMyCharacterSpriteMoved(keyCode);
+        public void onMoved(List<Coord> list) {
+
         }
 
         @Override

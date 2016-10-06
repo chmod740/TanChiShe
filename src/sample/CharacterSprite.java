@@ -46,18 +46,12 @@ public class CharacterSprite extends Parent {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.characterListener = characterListener;
-        Image actor = new Image(getClass().getResourceAsStream("img/down.png"));
-        mImageView = new ImageView(actor);
-        mImageView.setViewport(new Rectangle2D(0, 0, width, height));
-        mImageView.setLayoutX(x*width);
-        mImageView.setLayoutY(y*height);
 
-        imageViews.add(mImageView);
-        Coord coord = new Coord(x,y);
-        data.add(coord);
-
-        getChildren().add(mImageView);
+        data.add(new Coord(x, y));
+        data.add(new Coord(x, y-1));
+        data.add(new Coord(x, y-2));
+        direction = Direction.Down;
+        move();
 
         if (characterListener!=null){
             //增加Timer
@@ -71,6 +65,7 @@ public class CharacterSprite extends Parent {
                             int size = directions.size();
                             if (size>0){
                                 KeyCode keyCode = directions.get(size-1);
+                                characterListener.onMoveRequest(keyCode);
                                 if(keyCode == KeyCode.LEFT){
                                     moveLeft();
                                 }else if(keyCode == KeyCode.RIGHT){
@@ -80,9 +75,7 @@ public class CharacterSprite extends Parent {
                                 }else if(keyCode == KeyCode.DOWN){
                                     moveDown();
                                 }
-                                characterListener.onMoved(keyCode);
-                            }else {
-                                stop();
+
                             }
                         }
                     });
@@ -105,34 +98,8 @@ public class CharacterSprite extends Parent {
      */
     public void moveDown() {
         direction = Direction.Down;
-        /**
-         * 清空原有的imageView
-         * */
-        for (ImageView imageView : imageViews){
-            getChildren().remove(imageView);
-        }
-        imageViews.clear();
 
-        Coord coord = data.get(0);
-        coord.y = coord.y + 1;
-        data.remove(data.size()-1);
-        data.add(0,coord);
-
-        Image actor = new Image(getClass().getResourceAsStream("img/down.png"));
-        ImageView imageView = new ImageView(actor);
-        imageView.setLayoutX(coord.x * width);
-        imageView.setLayoutY(coord.y * height);
-        getChildren().add(imageView);
-        imageViews.add(imageView);
-
-        for (int i = 1 ; i < data.size() ; i++){
-            Image t_actor = new Image(getClass().getResourceAsStream("img/body.png"));
-            ImageView t_imageView = new ImageView(actor);
-            imageView.setLayoutX(coord.x * width);
-            imageView.setLayoutY(coord.y * height);
-            getChildren().add(t_imageView);
-            imageViews.add(t_imageView);
-        }
+        move();
 
         lastDirection = direction;
     }
@@ -142,36 +109,7 @@ public class CharacterSprite extends Parent {
      */
     public void moveLeft() {
         direction = Direction.Left;
-
-        /**
-         * 清空原有的imageView
-         * */
-        for (ImageView imageView : imageViews){
-            getChildren().remove(imageView);
-        }
-        imageViews.clear();
-
-        Coord coord = data.get(0);
-        coord.x = coord.x - 1;
-        data.remove(data.size()-1);
-        data.add(0,coord);
-
-        Image actor = new Image(getClass().getResourceAsStream("img/left.png"));
-        ImageView imageView = new ImageView(actor);
-        imageView.setLayoutX(coord.x * width);
-        imageView.setLayoutY(coord.y * height);
-        getChildren().add(imageView);
-        imageViews.add(imageView);
-
-        for (int i = 1 ; i < data.size() ; i++){
-            Image t_actor = new Image(getClass().getResourceAsStream("img/body.png"));
-            ImageView t_imageView = new ImageView(actor);
-            imageView.setLayoutX(coord.x * width);
-            imageView.setLayoutY(coord.y * height);
-            getChildren().add(t_imageView);
-            imageViews.add(t_imageView);
-        }
-
+        move();
         lastDirection = direction;
 
     }
@@ -181,37 +119,7 @@ public class CharacterSprite extends Parent {
      */
     public void moveRight() {
         direction = Direction.Right;
-
-
-        /**
-         * 清空原有的imageView
-         * */
-        for (ImageView imageView : imageViews){
-            getChildren().remove(imageView);
-        }
-        imageViews.clear();
-
-        Coord coord = data.get(0);
-        coord.x = coord.x + 1;
-        data.remove(data.size()-1);
-        data.add(0,coord);
-
-        Image actor = new Image(getClass().getResourceAsStream("img/right.png"));
-        ImageView imageView = new ImageView(actor);
-        imageView.setLayoutX(coord.x * width);
-        imageView.setLayoutY(coord.y * height);
-        getChildren().add(imageView);
-        imageViews.add(imageView);
-
-        for (int i = 1 ; i < data.size() ; i++){
-            Image t_actor = new Image(getClass().getResourceAsStream("img/body.png"));
-            ImageView t_imageView = new ImageView(actor);
-            imageView.setLayoutX(coord.x * width);
-            imageView.setLayoutY(coord.y * height);
-            getChildren().add(t_imageView);
-            imageViews.add(t_imageView);
-        }
-
+        move();
         lastDirection = direction;
     }
 
@@ -220,7 +128,12 @@ public class CharacterSprite extends Parent {
      */
     public void moveUp() {
         direction = Direction.Up;
+        move();
+        lastDirection = direction;
+    }
 
+
+    public void move(){
         /**
          * 清空原有的imageView
          * */
@@ -230,34 +143,62 @@ public class CharacterSprite extends Parent {
         imageViews.clear();
 
         Coord coord = data.get(0);
-        coord.y = coord.y - 1;
-        data.remove(data.size()-1);
-        data.add(0,coord);
+        Coord tCoord = null;
+        Image actor = null;
+        if (direction == Direction.Up){
+            tCoord = new Coord(coord.x,coord.y-1);
+            actor = new Image(getClass().getResourceAsStream("img/up.png"));
+        }
+        if (direction == Direction.Down){
+            tCoord = new Coord(coord.x,coord.y+1);
+            actor = new Image(getClass().getResourceAsStream("img/down.png"));
+        }
+        if (direction == Direction.Left){
+            tCoord = new Coord(coord.x-1,coord.y);
+            actor = new Image(getClass().getResourceAsStream("img/left.png"));
+        }
+        if (direction == Direction.Right){
+            tCoord = new Coord(coord.x+1,coord.y);
+            actor = new Image(getClass().getResourceAsStream("img/right.png"));
+        }
 
-        Image actor = new Image(getClass().getResourceAsStream("img/up.png"));
+
+
+        data.remove(data.size()-1);
+        data.add(0,tCoord);
+
+
         ImageView imageView = new ImageView(actor);
-        imageView.setLayoutX(coord.x * width);
-        imageView.setLayoutY(coord.y * height);
+        imageView.setLayoutX(data.get(0).x * width);
+        imageView.setLayoutY(data.get(0).y * height);
         getChildren().add(imageView);
         imageViews.add(imageView);
 
         for (int i = 1 ; i < data.size() ; i++){
             Image t_actor = new Image(getClass().getResourceAsStream("img/body.png"));
-            ImageView t_imageView = new ImageView(actor);
-            imageView.setLayoutX(coord.x * width);
-            imageView.setLayoutY(coord.y * height);
+            ImageView t_imageView = new ImageView(t_actor);
+            t_imageView.setLayoutX(data.get(i).x * width);
+            t_imageView.setLayoutY(data.get(i).y * height);
             getChildren().add(t_imageView);
             imageViews.add(t_imageView);
         }
-
-        lastDirection = direction;
+        //characterListener.onMoved(data);
     }
 
     /**
      * 人物停止
      * */
     public void stop(){
+        try {
+            timerTask.cancel();
+        }catch (Exception e){
 
+        }
+        try {
+            timer.cancel();
+        }catch (Exception e){
+
+        }
     }
 
     public void addKeyCode(KeyCode keyCode){
@@ -268,4 +209,5 @@ public class CharacterSprite extends Parent {
     public void removeKeyCode(KeyCode keyCode){
 
     }
+
 }
