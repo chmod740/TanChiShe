@@ -189,7 +189,7 @@ public class GameBoard {
 
         @Override
         public void onMyAteFood(Coord coord) {
-            System.out.println("我方吃");
+//            System.out.println("我方吃");
 
             myCharacterSprite.addScore(1);
             myCharacterSprite.addSpeed();
@@ -206,7 +206,7 @@ public class GameBoard {
 
         @Override
         public void onOpponentAteFood(Coord coord) {
-            System.out.println("对方吃");
+//            System.out.println("对方吃");
 
             opponentCharacterSprite.addScore(1);
 //            opponentCharacterSprite.addSpeed();
