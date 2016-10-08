@@ -46,7 +46,10 @@ public class CharacterSprite extends Parent {
     private List<ImageView>imageViews = new ArrayList<>();
 
 
+    private boolean isMine;
+
     public CharacterSprite(CharacterListener characterListener, int x, int y, int width, int height,boolean isMine) {
+        this.isMine = isMine;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -130,26 +133,52 @@ public class CharacterSprite extends Parent {
         Image actor = null;
         if (direction == Direction.Up){
             tCoord = new Coord(coord.x,coord.y-1);
-            actor = new Image(getClass().getResourceAsStream("img/up.png"));
+            if (isMine){
+                actor = new Image(getClass().getResourceAsStream("img/r_up.png"));
+            }else {
+                actor = new Image(getClass().getResourceAsStream("img/up.png"));
+            }
+
         }
         if (direction == Direction.Down){
             tCoord = new Coord(coord.x,coord.y+1);
-            actor = new Image(getClass().getResourceAsStream("img/down.png"));
+            if (isMine){
+                actor = new Image(getClass().getResourceAsStream("img/r_down.png"));
+            }else {
+                actor = new Image(getClass().getResourceAsStream("img/down.png"));
+            }
+
         }
         if (direction == Direction.Left){
             tCoord = new Coord(coord.x-1,coord.y);
-            actor = new Image(getClass().getResourceAsStream("img/left.png"));
+            if (isMine){
+                actor = new Image(getClass().getResourceAsStream("img/r_left.png"));
+            }else {
+                actor = new Image(getClass().getResourceAsStream("img/left.png"));
+            }
+
         }
         if (direction == Direction.Right){
             tCoord = new Coord(coord.x+1,coord.y);
-            actor = new Image(getClass().getResourceAsStream("img/right.png"));
+            if (isMine){
+                actor = new Image(getClass().getResourceAsStream("img/r_right.png"));
+            }else {
+                actor = new Image(getClass().getResourceAsStream("img/right.png"));
+            }
+
         }
 
         data.remove(data.size()-1);
         data.add(0,tCoord);
 
         for (int i = 1 ; i < data.size() ; i++){
-            Image t_actor = new Image(getClass().getResourceAsStream("img/body.png"));
+            Image t_actor = null;
+            if (isMine){
+                t_actor = new Image(getClass().getResourceAsStream("img/r_body.png"));
+            }else {
+                t_actor = new Image(getClass().getResourceAsStream("img/body.png"));
+            }
+
             ImageView t_imageView = new ImageView(t_actor);
             t_imageView.setLayoutX(data.get(i).x * width);
             t_imageView.setLayoutY(data.get(i).y * height);
