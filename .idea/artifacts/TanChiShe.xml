@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="TanChiShe">
+    <output-path>$PROJECT_DIR$/out/artifacts/TanChiShe</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="sample.Main" />
+        <option name="description" value="" />
+        <option name="htmlParamFile" value="" />
+        <option name="paramFile" value="" />
+        <option name="title" value="" />
+        <option name="vendor" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="TanChiShe.jar">
+        <element id="module-output" name="TanChiShe" />
+      </element>
+      <element id="artifact" artifact-name="JavaFXApp" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/mina-core-2.0.14.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/slf4j-api-1.7.21.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

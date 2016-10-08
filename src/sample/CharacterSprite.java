@@ -262,7 +262,7 @@ public class CharacterSprite extends Parent {
         timer = new Timer();
         addTaskTimer();
         //首次执行的时候的延时
-        long delay = 0;
+        long delay = intevalPeriod;
         //每次执行的时候的时延
         if (intevalPeriod > 200){
             intevalPeriod = intevalPeriod - 20;
@@ -276,7 +276,7 @@ public class CharacterSprite extends Parent {
         timer.cancel();
         timer = new Timer();
         //首次执行的时候的延时
-        long delay = 0;
+        long delay = intevalPeriod;
         //每次执行的时候的时延
         intevalPeriod = intevalPeriod + 30;
         // schedules the task to be run in an interval
@@ -293,6 +293,6 @@ public class CharacterSprite extends Parent {
     }
 
     public void addLength(Coord coord){
-        data.add(coord);
+        data.add(data.get(data.size()-1));
     }
 }
